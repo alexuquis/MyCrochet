@@ -1,0 +1,220 @@
+<Window x:Class="MyCrochetWpf.Views.VerPedidoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Ver Pedido"
+        Width="410"
+        Height="510"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource FondoSuave}"
+        FontFamily="{StaticResource FuenteComfortaa}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <Window.Resources>
+
+        <!-- Botón "X" de la barra superior (btnCerrar del WinForms). -->
+        <Style x:Key="BotonIcono" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.75" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Etiquetas del detalle (label1..label12, KG Red Hands 9.75 pt). -->
+        <Style x:Key="Etiqueta" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource FuenteKGRedHands}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="{StaticResource TintoAcento}" />
+        </Style>
+
+        <!-- Campos del detalle: solo lectura, blancos y sin borde como los TextBox
+             con BorderStyle.None del WinForms (ReadOnly = true). -->
+        <Style x:Key="CampoLectura" TargetType="TextBox">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource TintoAcento}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontFamily" Value="{StaticResource FuenteKGRedHands}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Padding" Value="4,0" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- txtDesc: multilínea, el texto arranca arriba. -->
+        <Style x:Key="CampoDescripcionLectura"
+               TargetType="TextBox"
+               BasedOn="{StaticResource CampoLectura}">
+            <Setter Property="Padding" Value="4,3" />
+            <Setter Property="VerticalContentAlignment" Value="Top" />
+        </Style>
+
+    </Window.Resources>
+
+    <!-- El layout replica el ClientSize 410x510 del WinForms. -->
+    <Canvas Width="410" Height="510" Background="{StaticResource FondoSuave}">
+
+        <!-- label3: línea rosa bajo la barra superior. -->
+        <Rectangle Canvas.Left="0"
+                   Canvas.Top="33"
+                   Width="410"
+                   Height="4"
+                   Fill="{StaticResource RosaDetalle}" />
+
+        <!-- Título aprobado para la pantalla (el WinForms solo mostraba la barra). -->
+        <TextBlock Canvas.Left="22"
+                   Canvas.Top="3"
+                   Text="Ver Pedido"
+                   FontFamily="{StaticResource FuenteSuperMindset}"
+                   FontSize="24"
+                   Foreground="{StaticResource TintoAcento}" />
+
+        <!-- label4 / label2. -->
+        <TextBlock Canvas.Left="24" Canvas.Top="49"
+                   Style="{StaticResource Etiqueta}"
+                   Text="Nombre del Cliente:" />
+        <TextBlock Canvas.Left="218" Canvas.Top="49"
+                   Style="{StaticResource Etiqueta}"
+                   Text="Num/Red social:" />
+
+        <!-- txtNom / txtContacto. -->
+        <TextBox Canvas.Left="24" Canvas.Top="71"
+                 Width="161" Height="22"
+                 Style="{StaticResource CampoLectura}"
+                 Text="{Binding Cliente, Mode=OneWay}" />
+
+        <TextBox Canvas.Left="218" Canvas.Top="71"
+                 Width="162" Height="22"
+                 Style="{StaticResource CampoLectura}"
+                 Text="{Binding Contacto, Mode=OneWay}" />
+
+        <!-- label5 / label7. -->
+        <TextBlock Canvas.Left="24" Canvas.Top="97"
+                   Style="{StaticResource Etiqueta}"
+                   Text="Tipo de Pedido:" />
+        <TextBlock Canvas.Left="218" Canvas.Top="97"
+                   Style="{StaticResource Etiqueta}"
+                   Text="Fecha de Entrega:" />
+
+        <!-- txtTipo / txxFecha. -->
+        <TextBox Canvas.Left="24" Canvas.Top="119"
+                 Width="161" Height="22"
+                 Style="{StaticResource CampoLectura}"
+                 Text="{Binding TipoPedido, Mode=OneWay}" />
+
+        <TextBox Canvas.Left="218" Canvas.Top="119"
+                 Width="161" Height="22"
+                 Style="{StaticResource CampoLectura}"
+                 Text="{Binding FechaEntrega, Mode=OneWay}" />
+
+        <!-- label8: Descripción. -->
+        <TextBlock Canvas.Left="145" Canvas.Top="166"
+                   Text="Descripción:"
+                   FontFamily="{StaticResource FuenteKGRedHands}"
+                   FontSize="16"
+                   Foreground="{StaticResource TintoAcento}" />
+
+        <!-- txtDesc. -->
+        <TextBox Canvas.Left="24" Canvas.Top="191"
+                 Width="356" Height="126"
+                 Style="{StaticResource CampoDescripcionLectura}"
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 VerticalScrollBarVisibility="Auto"
+                 Text="{Binding Descripcion, Mode=OneWay}" />
+
+        <!-- label9 / label11. -->
+        <TextBlock Canvas.Left="24" Canvas.Top="333"
+                   Style="{StaticResource Etiqueta}"
+                   Text="Subtotal:" />
+        <TextBlock Canvas.Left="218" Canvas.Top="333"
+                   Style="{StaticResource Etiqueta}"
+                   Text="Opción de envio:" />
+
+        <!-- txtSub / txtEnvio. -->
+        <TextBox Canvas.Left="24" Canvas.Top="359"
+                 Width="161" Height="22"
+                 Style="{StaticResource CampoLectura}"
+                 Text="{Binding Subtotal, Mode=OneWay}" />
+
+        <TextBox Canvas.Left="218" Canvas.Top="359"
+                 Width="161" Height="22"
+                 Style="{StaticResource CampoLectura}"
+                 Text="{Binding Envio, Mode=OneWay}" />
+
+        <!-- label10 / label12. -->
+        <TextBlock Canvas.Left="24" Canvas.Top="389"
+                   Style="{StaticResource Etiqueta}"
+                   Text="Anticipo:" />
+        <TextBlock Canvas.Left="218" Canvas.Top="389"
+                   Style="{StaticResource Etiqueta}"
+                   Text="Costo de envio:" />
+
+        <!-- txtAnt / txtEnv. -->
+        <TextBox Canvas.Left="24" Canvas.Top="411"
+                 Width="161" Height="22"
+                 Style="{StaticResource CampoLectura}"
+                 Text="{Binding Anticipo, Mode=OneWay}" />
+
+        <TextBox Canvas.Left="218" Canvas.Top="411"
+                 Width="162" Height="22"
+                 Style="{StaticResource CampoLectura}"
+                 Text="{Binding CostoEnvio, Mode=OneWay}" />
+
+        <!-- label1 / txtTotal: total del pedido (PrecioFinal). -->
+        <TextBlock Canvas.Left="113" Canvas.Top="463"
+                   Style="{StaticResource Etiqueta}"
+                   Text="Total:" />
+
+        <TextBox Canvas.Left="166" Canvas.Top="466"
+                 Width="117" Height="22"
+                 Style="{StaticResource CampoLectura}"
+                 Text="{Binding Total, Mode=OneWay}" />
+
+        <!-- panel1: barra superior (arrastrar / cerrar). -->
+        <Border Canvas.Left="0"
+                Canvas.Top="0"
+                Width="410"
+                Height="33"
+                Background="Transparent"
+                MouseLeftButtonDown="BarraTitulo_MouseLeftButtonDown">
+            <Button Style="{StaticResource BotonIcono}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Width="26" Height="22"
+                    Margin="0,8,20,0"
+                    Click="Cerrar_Click">
+                <Image Source="/Assets/Login/icono_cerrar.png" Stretch="Uniform" />
+            </Button>
+        </Border>
+
+    </Canvas>
+</Window>

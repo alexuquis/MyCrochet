@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>MyCrochetWpf</RootNamespace>
+    <AssemblyName>MyCrochetWpf</AssemblyName>
+    <!-- Permite compilar el target de Windows desde Linux/WSL con el SDK de Windows. -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />
+    <!-- Animación de GIFs (C4/C8); en el Login el fondo va estático por decisión de C0. -->
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+  </ItemGroup>
+
+  <!-- Imágenes, GIFs y fuentes empaquetados como recursos WPF. -->
+  <ItemGroup>
+    <Resource Include="Assets\**\*" />
+    <Resource Include="Fonts\**\*" />
+  </ItemGroup>
+
+</Project>

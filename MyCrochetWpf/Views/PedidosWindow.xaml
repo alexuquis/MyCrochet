@@ -1,0 +1,611 @@
+<Window x:Class="MyCrochetWpf.Views.PedidosWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MyCrochet-Pedidos"
+        Width="1100"
+        Height="700"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource FondoCrema}"
+        FontFamily="{StaticResource FuenteComfortaa}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <Window.Resources>
+
+        <BooleanToVisibilityConverter x:Key="BoolAVisibilidad" />
+
+        <!-- Botón del menú lateral: la imagen de fondo define el aspecto. -->
+        <Style x:Key="BotonMenu" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.9" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Opacity" Value="0.8" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Iconos de la barra superior (minimizar / cerrar). -->
+        <Style x:Key="BotonIcono" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.75" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Botón sólido tinto ("Cerrar Sesión", button5 del WinForms). -->
+        <Style x:Key="BotonTinto" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource TintoAcento}" />
+            <Setter Property="Foreground" Value="{StaticResource FondoCrema}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontFamily" Value="{StaticResource FuenteGoodBakwan}" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.9" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Opacity" Value="0.8" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Caja de búsqueda (txtBusc). Plantilla propia para que el foco no
+             cambie el borde rosa por el azul del tema de WPF. -->
+        <Style x:Key="CajaBusqueda" TargetType="TextBox">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource TintoAcento}" />
+            <Setter Property="CaretBrush" Value="{StaticResource TintoAcento}" />
+            <Setter Property="BorderBrush" Value="{StaticResource RosaDetalle}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontFamily" Value="{StaticResource FuenteKGRedHands}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="4,0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Elementos del desplegable de los combos de filtro. -->
+        <Style x:Key="ItemComboFiltro" TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource TintoAcento}" />
+            <Setter Property="Padding" Value="6,3" />
+            <Setter Property="FontFamily" Value="{StaticResource FuenteKGRedHands}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              ContentStringFormat="{TemplateBinding ContentStringFormat}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter Property="Background" Value="{StaticResource RosaDetalle}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{StaticResource FondoAlterno}" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Combos de filtro (cmbTipoFiltro / cmbEstadoFiltro). Plantilla plana
+             con la paleta corporativa en lugar del chrome gris de WPF. -->
+        <Style x:Key="ComboFiltro" TargetType="ComboBox">
+            <Setter Property="Background" Value="{StaticResource FondoCrema}" />
+            <Setter Property="Foreground" Value="{StaticResource TintoAcento}" />
+            <Setter Property="BorderBrush" Value="{StaticResource RosaDetalle}" />
+            <Setter Property="FontFamily" Value="{StaticResource FuenteKGRedHands}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="ItemContainerStyle" Value="{StaticResource ItemComboFiltro}" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="BotonCombo"
+                                          ClickMode="Press"
+                                          Focusable="False"
+                                          Background="{TemplateBinding Background}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="1">
+                                            <Path Data="M 0 0 L 4 4 L 8 0 Z"
+                                                  Fill="{StaticResource TintoAcento}"
+                                                  HorizontalAlignment="Right"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,6,0" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+
+                            <ContentPresenter Margin="6,0,20,0"
+                                              VerticalAlignment="Center"
+                                              IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" />
+
+                            <Popup x:Name="PART_Popup"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   Placement="Bottom"
+                                   PopupAnimation="Slide">
+                                <Border Background="White"
+                                        BorderBrush="{StaticResource RosaDetalle}"
+                                        BorderThickness="1"
+                                        MinWidth="{TemplateBinding ActualWidth}"
+                                        MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <ScrollViewer>
+                                        <StackPanel IsItemsHost="True"
+                                                    KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource TintoAcento}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Encabezado del grid (tinto con texto blanco). -->
+        <Style x:Key="EncabezadoPedidos" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource TintoAcento}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontFamily" Value="{StaticResource FuenteComfortaa}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Padding" Value="8,0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <!-- Celda sin borde; selección rosa con texto tinto. -->
+        <Style x:Key="CeldaPedidos" TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="8,0" />
+            <Setter Property="Foreground" Value="{StaticResource TintoAcento}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource RosaDetalle}" />
+                    <Setter Property="Foreground" Value="{StaticResource TintoAcento}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Menú contextual del grid (EditorPedidos), con la paleta corporativa. -->
+        <Style x:Key="MenuContextual" TargetType="ContextMenu">
+            <Setter Property="Background" Value="{StaticResource FondoCrema}" />
+            <Setter Property="BorderBrush" Value="{StaticResource RosaDetalle}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="FontFamily" Value="{StaticResource FuenteKGRedHands}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="{StaticResource TintoAcento}" />
+        </Style>
+
+        <Style x:Key="ItemMenuContextual" TargetType="MenuItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource TintoAcento}" />
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter Property="Background" Value="{StaticResource RosaDetalle}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <!-- El layout replica el ClientSize 1100x700 del WinForms; el Viewbox lo
+         ajusta proporcionalmente al tamaño real de la ventana. -->
+    <Viewbox Stretch="Uniform">
+        <Canvas Width="1100" Height="700" Background="{StaticResource FondoCrema}">
+
+            <!-- panel2: menú lateral. -->
+            <Border Canvas.Left="-1"
+                    Canvas.Top="24"
+                    Width="269"
+                    Height="678"
+                    Background="{StaticResource RosaDetalle}" />
+
+            <!-- panel3: tarjeta del logo (231x151 en la posición del WinForms). -->
+            <Image Canvas.Left="20"
+                   Canvas.Top="27"
+                   Width="231"
+                   Height="151"
+                   Source="pack://application:,,,/MyCrochetWpf;component/Assets/my.png"
+                   Stretch="Fill" />
+
+            <!-- btnlogo: abre Inicio. -->
+            <Button Canvas.Left="38" Canvas.Top="40"
+                    Width="196" Height="123"
+                    Style="{StaticResource BotonMenu}"
+                    Command="{Binding IrAInicioCommand}">
+                <Image Source="pack://application:,,,/MyCrochetWpf;component/Assets/1000080172.png"
+                       Stretch="Uniform" />
+            </Button>
+
+            <!-- Línea inferior de la tarjeta (label1 del WinForms). -->
+            <Rectangle Canvas.Left="23"
+                       Canvas.Top="174"
+                       Width="228"
+                       Height="4"
+                       Fill="{StaticResource TintoAcento}" />
+
+            <!-- Menú lateral (btnInicio / btnPedidos / btnInventario / btnCotizacion / btnConfig). -->
+            <!-- btnInicio: navega a Inicio (C3-3). -->
+            <Button Canvas.Left="54" Canvas.Top="198"
+                    Width="197" Height="41"
+                    Style="{StaticResource BotonMenu}"
+                    Command="{Binding IrAInicioCommand}">
+                <Grid>
+                    <Image Source="pack://application:,,,/MyCrochetWpf;component/Assets/Inicio/boton_menu.png" Stretch="Fill" />
+                    <TextBlock Text="Inicio"
+                               FontFamily="{StaticResource FuenteKGRedHands}"
+                               FontSize="17"
+                               Foreground="{StaticResource TintoAcento}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Grid>
+            </Button>
+
+            <!-- Pantalla actual: Pedidos (texto blanco como el ítem activo). -->
+            <Button Canvas.Left="54" Canvas.Top="255"
+                    Width="197" Height="41"
+                    Style="{StaticResource BotonMenu}">
+                <Grid>
+                    <Image Source="pack://application:,,,/MyCrochetWpf;component/Assets/log2.png" Stretch="Fill" />
+                    <TextBlock Text="Pedidos"
+                               FontFamily="{StaticResource FuenteKGRedHands}"
+                               FontSize="17"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Grid>
+            </Button>
+
+            <!-- TODO(C7): navegar a Inventario. -->
+            <Button Canvas.Left="54" Canvas.Top="312"
+                    Width="197" Height="41"
+                    Style="{StaticResource BotonMenu}">
+                <Grid>
+                    <Image Source="pack://application:,,,/MyCrochetWpf;component/Assets/Inicio/boton_menu.png" Stretch="Fill" />
+                    <TextBlock Text="Inventario"
+                               FontFamily="{StaticResource FuenteKGRedHands}"
+                               FontSize="17"
+                               Foreground="{StaticResource TintoAcento}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Grid>
+            </Button>
+
+            <!-- TODO(C10): navegar a Cotización. -->
+            <Button Canvas.Left="54" Canvas.Top="372"
+                    Width="197" Height="41"
+                    Style="{StaticResource BotonMenu}">
+                <Grid>
+                    <Image Source="pack://application:,,,/MyCrochetWpf;component/Assets/Inicio/boton_menu.png" Stretch="Fill" />
+                    <TextBlock Text="Cotización"
+                               FontFamily="{StaticResource FuenteKGRedHands}"
+                               FontSize="17"
+                               Foreground="{StaticResource TintoAcento}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Grid>
+            </Button>
+
+            <!-- TODO(C13): navegar a Configuración. -->
+            <Button Canvas.Left="54" Canvas.Top="429"
+                    Width="197" Height="41"
+                    Style="{StaticResource BotonMenu}">
+                <Grid>
+                    <Image Source="pack://application:,,,/MyCrochetWpf;component/Assets/Inicio/boton_menu.png" Stretch="Fill" />
+                    <TextBlock Text="Configuración"
+                               FontFamily="{StaticResource FuenteKGRedHands}"
+                               FontSize="17"
+                               Foreground="{StaticResource TintoAcento}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Grid>
+            </Button>
+
+            <!-- Iconos del menú (pictureBox1..5). -->
+            <Image Canvas.Left="10" Canvas.Top="205" Width="38" Height="34"
+                   Source="pack://application:,,,/MyCrochetWpf;component/Assets/imginic.png" Stretch="Fill" />
+            <Image Canvas.Left="10" Canvas.Top="262" Width="38" Height="34"
+                   Source="pack://application:,,,/MyCrochetWpf;component/Assets/imgped.png" Stretch="Fill" />
+            <Image Canvas.Left="10" Canvas.Top="319" Width="38" Height="34"
+                   Source="pack://application:,,,/MyCrochetWpf;component/Assets/imginv.png" Stretch="Fill" />
+            <Image Canvas.Left="10" Canvas.Top="379" Width="38" Height="34"
+                   Source="pack://application:,,,/MyCrochetWpf;component/Assets/imgcoti.png" Stretch="Fill" />
+            <Image Canvas.Left="10" Canvas.Top="436" Width="38" Height="34"
+                   Source="pack://application:,,,/MyCrochetWpf;component/Assets/imgconfig.png" Stretch="Fill" />
+
+            <!-- Cerrar Sesión (button5 del WinForms). -->
+            <Button Canvas.Left="54" Canvas.Top="658"
+                    Width="175" Height="28"
+                    Style="{StaticResource BotonTinto}"
+                    Content="Cerrar Sesión"
+                    Command="{Binding CerrarSesionCommand}" />
+
+            <!-- panel4: área principal. -->
+            <Border Canvas.Left="284"
+                    Canvas.Top="40"
+                    Width="804"
+                    Height="646"
+                    Background="{StaticResource FondoCrema}" />
+
+            <!-- Título "Gestión de Pedidos" (label2, Super Mindset 48 pt). -->
+            <TextBlock Canvas.Left="433"
+                       Canvas.Top="81"
+                       Text="Gestión de Pedidos"
+                       FontFamily="{StaticResource FuenteSuperMindset}"
+                       FontSize="64"
+                       Foreground="{StaticResource TintoAcento}" />
+
+            <!-- Línea divisoria (label3 del WinForms). -->
+            <Rectangle Canvas.Left="333"
+                       Canvas.Top="149"
+                       Width="706"
+                       Height="4"
+                       Fill="{StaticResource RosaDetalle}" />
+
+            <!-- Filtros: búsqueda, tipo y estado (labels en KG Red Hands). -->
+            <TextBlock Canvas.Left="360"
+                       Canvas.Top="196"
+                       Text="Buscar Pedido..."
+                       FontFamily="{StaticResource FuenteKGRedHands}"
+                       FontSize="13"
+                       Foreground="{StaticResource TintoAcento}" />
+
+            <TextBox Canvas.Left="360"
+                     Canvas.Top="218"
+                     Width="176" Height="24"
+                     Style="{StaticResource CajaBusqueda}"
+                     Text="{Binding FiltroTexto, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Canvas.Left="554"
+                       Canvas.Top="196"
+                       Text="Tipo de Pedido:"
+                       FontFamily="{StaticResource FuenteKGRedHands}"
+                       FontSize="13"
+                       Foreground="{StaticResource TintoAcento}" />
+
+            <ComboBox Canvas.Left="554"
+                      Canvas.Top="218"
+                      Width="139"
+                      Style="{StaticResource ComboFiltro}"
+                      ItemsSource="{Binding Tipos}"
+                      SelectedValuePath="Id"
+                      SelectedValue="{Binding TipoIdSeleccionado}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Nombre}"
+                                   Foreground="{StaticResource TintoAcento}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <TextBlock Canvas.Left="699"
+                       Canvas.Top="196"
+                       Text="Estado del Pedido:"
+                       FontFamily="{StaticResource FuenteKGRedHands}"
+                       FontSize="13"
+                       Foreground="{StaticResource TintoAcento}" />
+
+            <ComboBox Canvas.Left="699"
+                      Canvas.Top="218"
+                      Width="140"
+                      Style="{StaticResource ComboFiltro}"
+                      ItemsSource="{Binding Estados}"
+                      SelectedValuePath="Id"
+                      SelectedValue="{Binding EstadoIdSeleccionado}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Nombre}"
+                                   Foreground="{StaticResource TintoAcento}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <!-- Nuevo Pedido (btnNuevoPed → FmNuevoPedido en C4). -->
+            <Button Canvas.Left="874" Canvas.Top="200"
+                    Width="165" Height="41"
+                    Style="{StaticResource BotonMenu}"
+                    Command="{Binding NuevoPedidoCommand}">
+                <Grid>
+                    <Image Source="pack://application:,,,/MyCrochetWpf;component/Assets/Inicio/boton_menu.png" Stretch="Fill" />
+                    <TextBlock Text="Nuevo Pedido"
+                               FontFamily="{StaticResource FuenteKGRedHands}"
+                               FontSize="19"
+                               Foreground="{StaticResource TintoAcento}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Grid>
+            </Button>
+
+            <!-- Grid de pedidos (dataGridViewPedidos). -->
+            <DataGrid Canvas.Left="333"
+                      Canvas.Top="274"
+                      Width="706" Height="371"
+                      ItemsSource="{Binding Pedidos}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      CanUserSortColumns="False"
+                      CanUserResizeColumns="False"
+                      CanUserReorderColumns="False"
+                      HeadersVisibility="Column"
+                      RowHeaderWidth="0"
+                      RowHeight="25"
+                      ColumnHeaderHeight="35"
+                      ColumnHeaderStyle="{StaticResource EncabezadoPedidos}"
+                      CellStyle="{StaticResource CeldaPedidos}"
+                      GridLinesVisibility="Horizontal"
+                      HorizontalGridLinesBrush="{StaticResource RosaDetalle}"
+                      BorderThickness="0"
+                      Background="White"
+                      RowBackground="White"
+                      AlternatingRowBackground="{StaticResource FondoAlterno}"
+                      Foreground="{StaticResource TintoAcento}"
+                      FontSize="13"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow"
+                      PreviewMouseRightButtonDown="Pedidos_PreviewMouseRightButtonDown">
+                <DataGrid.ContextMenu>
+                    <ContextMenu Style="{StaticResource MenuContextual}">
+                        <MenuItem Header="Ver Pedido"
+                                  Style="{StaticResource ItemMenuContextual}"
+                                  Command="{Binding PlacementTarget.DataContext.VerPedidoCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                        <MenuItem Header="Modificar Pedido"
+                                  Style="{StaticResource ItemMenuContextual}"
+                                  Command="{Binding PlacementTarget.DataContext.ModificarPedidoCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                        <MenuItem Header="Eliminar Pedido"
+                                  Style="{StaticResource ItemMenuContextual}"
+                                  Visibility="{Binding PlacementTarget.DataContext.PuedeEliminarPedidos, RelativeSource={RelativeSource AncestorType=ContextMenu}, Converter={StaticResource BoolAVisibilidad}}"
+                                  Command="{Binding PlacementTarget.DataContext.EliminarPedidoCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Id"
+                                        Binding="{Binding Id}"
+                                        Width="0.4*" />
+                    <DataGridTextColumn Header="Cliente"
+                                        Binding="{Binding Cliente}"
+                                        Width="1.4*" />
+                    <DataGridTextColumn Header="Tipo de Pedido"
+                                        Binding="{Binding TipoPedido}"
+                                        Width="1.6*" />
+                    <DataGridTextColumn Header="Estado"
+                                        Binding="{Binding Estado}"
+                                        Width="1.2*" />
+                    <DataGridTextColumn Header="Fecha"
+                                        Binding="{Binding FechaEntrega, StringFormat=dd/MM/yyyy}"
+                                        Width="1*" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- panel1: barra superior rosa (arrastrar / minimizar / cerrar). -->
+            <Border Canvas.Left="-1"
+                    Canvas.Top="-1"
+                    Width="1102"
+                    Height="29"
+                    Background="{StaticResource RosaDetalle}"
+                    MouseLeftButtonDown="BarraTitulo_MouseLeftButtonDown">
+                <Canvas>
+                    <Button Style="{StaticResource BotonIcono}"
+                            Canvas.Left="1029" Canvas.Top="3"
+                            Width="28" Height="23"
+                            Click="Minimizar_Click">
+                        <Image Source="pack://application:,,,/MyCrochetWpf;component/Assets/3.png" Stretch="Uniform" />
+                    </Button>
+                    <Button Style="{StaticResource BotonIcono}"
+                            Canvas.Left="1063" Canvas.Top="3"
+                            Width="26" Height="23"
+                            Click="Cerrar_Click">
+                        <Image Source="pack://application:,,,/MyCrochetWpf;component/Assets/2.png" Stretch="Uniform" />
+                    </Button>
+                </Canvas>
+            </Border>
+
+        </Canvas>
+    </Viewbox>
+</Window>

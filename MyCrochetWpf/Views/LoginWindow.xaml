@@ -1,0 +1,218 @@
+<Window x:Class="MyCrochetWpf.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MyCrochet-Inicio"
+        Width="546"
+        Height="489"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource FondoCrema}"
+        FontFamily="{StaticResource FuenteComfortaa}">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+
+        <!-- Botón sin cromo: la imagen del content define el fondo. -->
+        <Style x:Key="BotonImagen" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="20">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.9" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Opacity" Value="0.8" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Iconos de la barra superior (minimizar / cerrar). -->
+        <Style x:Key="BotonIcono" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.75" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CampoTextoLogin" TargetType="TextBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="CaretBrush" Value="White" />
+            <Setter Property="SelectionBrush" Value="{StaticResource TintoAcento}" />
+            <Setter Property="FontFamily" Value="{StaticResource FuenteKGRedHands}" />
+            <Setter Property="FontSize" Value="17" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="CampoPasswordLogin" TargetType="PasswordBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="CaretBrush" Value="White" />
+            <Setter Property="SelectionBrush" Value="{StaticResource TintoAcento}" />
+            <Setter Property="FontFamily" Value="{StaticResource FuenteComfortaa}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+    </Window.Resources>
+
+    <Canvas Width="546" Height="489">
+
+        <!-- Fondo del login (GIF estático por decisión de C0). -->
+        <Image Canvas.Left="-5"
+               Canvas.Top="22"
+               Width="550"
+               Height="466"
+               Source="/Assets/Gifs/fondologin.gif"
+               Stretch="Fill" />
+
+        <!-- Barra superior rosa: arrastrar / minimizar / cerrar. -->
+        <Border Canvas.Left="0"
+                Canvas.Top="0"
+                Width="546"
+                Height="29"
+                Background="{StaticResource RosaDetalle}"
+                MouseLeftButtonDown="BarraTitulo_MouseLeftButtonDown">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Margin="0,0,5,0">
+                <Button Style="{StaticResource BotonIcono}"
+                        Width="28"
+                        Height="23"
+                        Margin="0,0,6,0"
+                        Click="Minimizar_Click">
+                    <Image Source="/Assets/Login/icono_minimizar.png" Stretch="Uniform" />
+                </Button>
+                <Button Style="{StaticResource BotonIcono}"
+                        Width="26"
+                        Height="23"
+                        Click="Cerrar_Click">
+                    <Image Source="/Assets/Login/icono_cerrar.png" Stretch="Uniform" />
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <!-- Tarjeta blanca. -->
+        <Image Canvas.Left="86"
+               Canvas.Top="44"
+               Width="374"
+               Height="401"
+               Source="/Assets/Login/panel_login.png"
+               Stretch="Fill" />
+
+        <!-- Logo. -->
+        <Image Canvas.Left="158"
+               Canvas.Top="57"
+               Width="224"
+               Height="149"
+               Source="/Assets/Login/logo_login.png"
+               Stretch="Uniform" />
+
+        <!-- Usuario. -->
+        <TextBlock Canvas.Left="139"
+                   Canvas.Top="209"
+                   Text="Ingrese su Usuario:"
+                   FontFamily="{StaticResource FuenteGoodBakwan}"
+                   FontSize="17"
+                   Foreground="{StaticResource TintoAcento}" />
+
+        <Image Canvas.Left="139"
+               Canvas.Top="233"
+               Width="270"
+               Height="41"
+               Source="/Assets/Login/campo_usuario.png"
+               Stretch="Fill" />
+
+        <TextBox x:Name="TxtUsuario"
+                 Canvas.Left="187"
+                 Canvas.Top="242"
+                 Width="195"
+                 Height="23"
+                 Style="{StaticResource CampoTextoLogin}"
+                 Text="{Binding Usuario, UpdateSourceTrigger=PropertyChanged}" />
+
+        <!-- Contraseña. -->
+        <TextBlock Canvas.Left="139"
+                   Canvas.Top="283"
+                   Text="Ingrese la Contraseña:"
+                   FontFamily="{StaticResource FuenteGoodBakwan}"
+                   FontSize="17"
+                   Foreground="{StaticResource TintoAcento}" />
+
+        <Image Canvas.Left="139"
+               Canvas.Top="307"
+               Width="270"
+               Height="41"
+               Source="/Assets/Login/campo_contrasena.png"
+               Stretch="Fill" />
+
+        <PasswordBox x:Name="TxtPassword"
+                     Canvas.Left="187"
+                     Canvas.Top="315"
+                     Width="195"
+                     Height="24"
+                     PasswordChar="●"
+                     Style="{StaticResource CampoPasswordLogin}"
+                     PasswordChanged="TxtPassword_PasswordChanged" />
+
+        <!-- Error de credenciales (oculto por defecto, como label3). -->
+        <TextBlock Canvas.Left="139"
+                   Canvas.Top="350"
+                   Width="270"
+                   Text="{Binding MensajeError}"
+                   Visibility="{Binding HayError, Converter={StaticResource BoolToVisibility}}"
+                   FontFamily="{StaticResource FuenteComfortaa}"
+                   FontSize="12"
+                   Foreground="DarkRed"
+                   TextWrapping="Wrap" />
+
+        <!-- Botón "Iniciar Sesión". -->
+        <Button Canvas.Left="187"
+                Canvas.Top="374"
+                Width="173"
+                Height="41"
+                Style="{StaticResource BotonImagen}"
+                IsDefault="True"
+                Command="{Binding EntrarCommand}">
+            <Grid>
+                <Image Source="/Assets/Login/boton_entrar.png" Stretch="Fill" />
+                <TextBlock Text="Iniciar Sesión"
+                           FontFamily="{StaticResource FuenteGoodBakwan}"
+                           FontSize="21"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+            </Grid>
+        </Button>
+
+    </Canvas>
+</Window>

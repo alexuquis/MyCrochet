@@ -1,0 +1,34 @@
+# --- Compilacion ---
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+
+# --- Visual Studio ---
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.tlog
+*.log
+
+# --- SQLite (la base se genera en el primer arranque) ---
+*.db
+*.db-shm
+*.db-wal
+
+# --- Temporales del entorno de desarrollo ---
+_*.ps1
+_*.txt
+_*.png
+*.TMP
+*~RF*
+
+# --- Entregas y paquetes ---
+Entregas/
+*.zip
+
+# --- Sistema ---
+Thumbs.db
+.DS_Store
