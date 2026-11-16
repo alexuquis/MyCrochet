@@ -503,6 +503,50 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
+            <!-- Rango de fechas de entrega (filtros adicionales de la rama feature). -->
+            <TextBlock Canvas.Left="360"
+                       Canvas.Top="250"
+                       Text="Entrega desde:"
+                       FontFamily="{StaticResource FuenteKGRedHands}"
+                       FontSize="13"
+                       Foreground="{StaticResource TintoAcento}" />
+
+            <DatePicker Canvas.Left="360"
+                        Canvas.Top="270"
+                        Width="150" Height="26"
+                        SelectedDate="{Binding FechaDesde}"
+                        FontFamily="{StaticResource FuenteKGRedHands}"
+                        FontSize="12" />
+
+            <TextBlock Canvas.Left="524"
+                       Canvas.Top="250"
+                       Text="Entrega hasta:"
+                       FontFamily="{StaticResource FuenteKGRedHands}"
+                       FontSize="13"
+                       Foreground="{StaticResource TintoAcento}" />
+
+            <DatePicker Canvas.Left="524"
+                        Canvas.Top="270"
+                        Width="150" Height="26"
+                        SelectedDate="{Binding FechaHasta}"
+                        FontFamily="{StaticResource FuenteKGRedHands}"
+                        FontSize="12" />
+
+            <Button Canvas.Left="874" Canvas.Top="266"
+                    Width="165" Height="30"
+                    Style="{StaticResource BotonMenu}"
+                    Command="{Binding LimpiarFiltrosCommand}">
+                <Grid>
+                    <Image Source="pack://application:,,,/MyCrochetWpf;component/Assets/Inicio/boton_menu.png" Stretch="Fill" />
+                    <TextBlock Text="Limpiar filtros"
+                               FontFamily="{StaticResource FuenteKGRedHands}"
+                               FontSize="16"
+                               Foreground="{StaticResource TintoAcento}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Grid>
+            </Button>
+
             <!-- Nuevo Pedido (btnNuevoPed → FmNuevoPedido en C4). -->
             <Button Canvas.Left="874" Canvas.Top="200"
                     Width="165" Height="41"
@@ -521,8 +565,8 @@
 
             <!-- Grid de pedidos (dataGridViewPedidos). -->
             <DataGrid Canvas.Left="333"
-                      Canvas.Top="274"
-                      Width="706" Height="371"
+                      Canvas.Top="310"
+                      Width="706" Height="335"
                       ItemsSource="{Binding Pedidos}"
                       AutoGenerateColumns="False"
                       IsReadOnly="True"

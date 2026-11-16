@@ -69,6 +69,18 @@ namespace MyCrochetWpf.ViewModels
 
         partial void OnEstadoIdSeleccionadoChanged(int value) => Filtrar();
 
+        /// <summary>FmPedidos: fecha de entrega mínima del rango (null = sin límite).</summary>
+        [ObservableProperty]
+        private DateTime? fechaDesde;
+
+        /// <summary>FmPedidos: fecha de entrega máxima del rango (null = sin límite).</summary>
+        [ObservableProperty]
+        private DateTime? fechaHasta;
+
+        partial void OnFechaDesdeChanged(DateTime? value) => Filtrar();
+
+        partial void OnFechaHastaChanged(DateTime? value) => Filtrar();
+
         /// <summary>FmPedidos_Load: eliminarPedido.Visible = (RolUsuarioAct == 1).</summary>
         public bool PuedeEliminarPedidos => SesionService.Actual.RolId == 1;
 
@@ -101,17 +113,39 @@ namespace MyCrochetWpf.ViewModels
             EstadoIdSeleccionado = 0;
         }
 
-        /// <summary>FmPedidos.cs → Filtrar() + Pedidos(filtro, tipo, estado).</summary>
+        /// <summary>FmPedidos.cs → Filtrar() + Pedidos(filtro, tipo, estado, desde, hasta).</summary>
         public void Filtrar()
         {
             int? tipo = TipoIdSeleccionado == 0 ? null : TipoIdSeleccionado;
             int? estado = EstadoIdSeleccionado == 0 ? null : EstadoIdSeleccionado;
 
+            // Si la usuaria elige las fechas al revés, se ordenan para no dejar el
+            // grid vacío por un rango imposible (FechaDesde > FechaHasta).
+            DateTime? desde = FechaDesde;
+            DateTime? hasta = FechaHasta;
+            if (desde.HasValue && hasta.HasValue && desde > hasta)
+            {
+                (desde, hasta) = (hasta, desde);
+            }
+
             Pedidos.Clear();
-            foreach (var pedido in repositorioEncargos.Listar(FiltroTexto, tipo, estado))
+            foreach (var pedido in repositorioEncargos.Listar(FiltroTexto, tipo, estado, desde, hasta))
             {
                 Pedidos.Add(pedido);
             }
+        }
+
+        /// <summary>
+        /// Devuelve los filtros a su estado inicial ("Todos" y sin rango de fechas).
+        /// </summary>
+        [RelayCommand]
+        private void LimpiarFiltros()
+        {
+            FiltroTexto = string.Empty;
+            TipoIdSeleccionado = 0;
+            EstadoIdSeleccionado = 0;
+            FechaDesde = null;
+            FechaHasta = null;
         }
 
         /// <summary>FmPedidos.cs → btnNuevoPed_Click (FmNuevoPedido.ShowDialog).</summary>

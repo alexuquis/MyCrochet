@@ -8,8 +8,16 @@ namespace MyCrochetWpf.Data
     /// </summary>
     public class RepositorioEncargos
     {
-        /// <summary>FmPedidos.cs: grid con filtro de texto, tipo y estado opcionales.</summary>
-        public List<PedidoResumen> Listar(string filtro = "", int? tipo = null, int? estado = null)
+        /// <summary>
+        /// FmPedidos.cs: grid con filtro de texto, tipo, estado y rango de fechas
+        /// de entrega opcionales.
+        /// </summary>
+        public List<PedidoResumen> Listar(
+            string filtro = "",
+            int? tipo = null,
+            int? estado = null,
+            DateTime? desde = null,
+            DateTime? hasta = null)
         {
             // SQL Server usaba '+' para concatenar y CAST(... AS NVARCHAR).
             const string query = @"SELECT e.Id, e.Cliente, tp.Nombre AS TipoPedido, es.Estado, e.FechaEntrega
@@ -20,7 +28,9 @@ namespace MyCrochetWpf.Data
                                           OR CAST(e.Id AS TEXT) LIKE '%' || @filtro || '%'
                                           OR @filtro = '')
                                    AND (e.TipoPedidoId = @tipo OR @tipo IS NULL)
-                                   AND (e.EstadoId = @estado OR @estado IS NULL)";
+                                   AND (e.EstadoId = @estado OR @estado IS NULL)
+                                   AND (@desde IS NULL OR date(e.FechaEntrega) >= date(@desde))
+                                   AND (@hasta IS NULL OR date(e.FechaEntrega) <= date(@hasta))";
 
             var pedidos = new List<PedidoResumen>();
 
@@ -30,6 +40,8 @@ namespace MyCrochetWpf.Data
             comando.Parameters.AddWithValue("@filtro", filtro);
             comando.Parameters.AddWithValue("@tipo", (object?)tipo ?? DBNull.Value);
             comando.Parameters.AddWithValue("@estado", (object?)estado ?? DBNull.Value);
+            comando.Parameters.AddWithValue("@desde", (object?)desde ?? DBNull.Value);
+            comando.Parameters.AddWithValue("@hasta", (object?)hasta ?? DBNull.Value);
 
             using var lector = comando.ExecuteReader();
             while (lector.Read())
